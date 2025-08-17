@@ -1,15 +1,14 @@
 import { Sequelize } from "sequelize-typescript";
 
-
-import { InputFindProductDto, OutputFindProductDto } from "./find.product.dto";
+import { InputUpdateProductDto, OutputUpdateProductDto } from "./update.product.dto";
+import { UpdateProductUseCase } from "./update.product.usecase";
+import ProductFactory from "../../../domain/product/factory/product.factory";
 import ProductModel from "../../../infrastructure/product/repository/sequelize/product.model";
 import ProductRepository from "../../../infrastructure/product/repository/sequelize/product.repository";
-import ProductFactory from "../../../domain/product/factory/product.factory";
 import Product from "../../../domain/product/entity/product";
-import { FindProductUseCase } from "./find.product.usecase";
 
 
-describe("Integration Test find product use case", () => {
+describe("Integration Test update product use case", () => {
     let sequelize: Sequelize;
 
     beforeEach(async () => {
@@ -28,22 +27,24 @@ describe("Integration Test find product use case", () => {
         await sequelize.close();
     });
 
-    it("should find a product", async () => {
+    it("should update a product", async () => {
         const productRepository = new ProductRepository();
-        const useCase = new FindProductUseCase(productRepository);
+        const useCase = new UpdateProductUseCase(productRepository);
 
-        const product = ProductFactory.create("a", "Camisa Cavada", 85);
+        const product1 = ProductFactory.create("a", "Camisa Cavada", 85);
 
-        await productRepository.create(product as Product);
+        await productRepository.create(product1 as Product);
 
-        const input: InputFindProductDto = {
-            id: product.id,
+        const input: InputUpdateProductDto = {
+            id: product1.id,
+            name: "Shirt Updated",
+            price: 20,
         };
 
-        const expectedOutput: OutputFindProductDto = {
-            id: product.id,
-            name: product.name,
-            price: product.price
+        const expectedOutput: OutputUpdateProductDto = {
+            id: product1.id,
+            name: "Shirt Updated",
+            price: 20,
         };
 
         const result = await useCase.execute(input);
