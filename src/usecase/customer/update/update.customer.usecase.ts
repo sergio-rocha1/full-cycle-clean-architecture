@@ -15,7 +15,7 @@ export default class UpdateCustomerUseCase {
   ): Promise<OutputUpdateCustomerDto> {
     const customer = await this.CustomerRepository.find(input.id);
     customer.changeName(input.name);
-    customer.changeAddress(
+    customer.setAddress(
       new Address(
         input.address.street,
         input.address.number,
@@ -29,10 +29,10 @@ export default class UpdateCustomerUseCase {
       id: customer.id,
       name: customer.name,
       address: {
-        street: customer.Address.street,
-        number: customer.Address.number,
-        zip: customer.Address.zip,
-        city: customer.Address.city,
+        street: customer.getAddress().street,
+        number: customer.getAddress().number,
+        zip: customer.getAddress().zip,
+        city: customer.getAddress().city,
       },
     };
   }

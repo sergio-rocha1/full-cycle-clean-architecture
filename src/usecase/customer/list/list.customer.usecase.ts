@@ -1,4 +1,4 @@
-import Customer from "../../../domain/customer/entity/customer";
+import { Customer } from "../../../domain/customer/entity/customer";
 import CustomerRepositoryInterface from "../../../domain/customer/repository/customer-repository.interface";
 import {
   InputListCustomerDto,
@@ -24,10 +24,10 @@ class OutputMapper {
         id: customer.id,
         name: customer.name,
         address: {
-          street: customer.Address.street,
-          number: customer.Address.number,
-          zip: customer.Address.zip,
-          city: customer.Address.city,
+          street: customer.getAddress().street,
+          number: customer.getAddress().number,
+          zip: customer.getAddress().zip,
+          city: customer.getAddress().city,
         },
       })),
     };

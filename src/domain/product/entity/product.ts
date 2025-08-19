@@ -1,49 +1,58 @@
-import ProductInterface from "./product.interface";
+import { Entity } from "../../@shared/entity/entity.abstract";
+import { ProductValidatorFactory } from "../factory/product.validator.factory";
 
-export default class Product implements ProductInterface {
-  private _id: string;
-  private _name: string;
-  private _price: number;
+export class Product extends Entity {
+	private context = "product";
+	private _name: string;
+	private _price: number;
 
-  constructor(id: string, name: string, price: number) {
-    this._id = id;
-    this._name = name;
-    this._price = price;
-    this.validate();
-  }
+	constructor(id: string, name: string, price: number) {
+		super(id);
 
-  get id(): string {
-    return this._id;
-  }
-  
-  get name(): string {
-    return this._name;
-  }
+		this._name = name;
+		this._price = price;
+		this.validate();
+	}
 
-  get price(): number {
-    return this._price;
-  }
+	validate() {
+		const productValidator = ProductValidatorFactory.create();
+		productValidator.validate(this);
+		this.notification.throwErrorIfHasErrors();
+	}
 
-  changeName(name: string): void {
-    this._name = name;
-    this.validate();
-  }
+	get id() {
+		return this._id;
+	}
 
-  changePrice(price: number): void {
-    this._price = price;
-    this.validate();
-  }
+	get name() {
+		return this._name;
+	}
 
-  validate(): boolean {
-    if (this._id.length === 0) {
-      throw new Error("Id is required");
-    }
-    if (this._name.length === 0) {
-      throw new Error("Name is required");
-    }
-    if (this._price < 0) {
-      throw new Error("Price must be greater than zero");
-    }
-    return true;
-  }
+	get price() {
+		return this._price;
+	}
+
+	changeName(name: string) {
+		this._name = name;
+		this.validate();
+	}
+
+	changePrice(price: number) {
+		this._price = price;
+		this.validate();
+	}
+
+	applyDiscount(discountPercentage: number) {
+		const discount = this._price * discountPercentage / 100;
+		this._price = this._price - discount;
+		this.validate();
+	}
+
+	toJSON() {
+		return {
+			id: this._id,
+			name: this._name,
+			price: this._price,
+		};
+	}
 }

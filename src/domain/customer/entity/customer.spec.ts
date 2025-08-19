@@ -1,69 +1,86 @@
 import Address from "../value-object/address";
-import Customer from "./customer";
+import { Customer } from "./customer";
 
 describe("Customer unit tests", () => {
-  it("should throw error when id is empty", () => {
-    expect(() => {
-      let customer = new Customer("", "John");
-    }).toThrowError("customer: Id is required");
-  });
+	const address = new Address("Wilkie Way", 4290, "94306", "Palo Alto, CA");
 
-  it("should throw error when name is empty", () => {
-    expect(() => {
-      let customer = new Customer("123", "");
-    }).toThrowError("customer: Name is required");
-  });
+	it("should throw error when id is empty", () => {
+		expect(() => {
+			new Customer("", "John Doe");
+		}).toThrowError("customer: Id is required");
+	});
 
-  it("should throw error when name is and id are empty", () => {
-    expect(() => {
-      let customer = new Customer("", "");
-    }).toThrowError("customer: Id is required,customer: Name is required");
-  });
+	it("should throw error when name is empty", () => {
+		expect(() => {
+			new Customer("123", "");
+		}).toThrowError("customer: Name is required");
+	});
 
-  it("should change name", () => {
-    // Arrange
-    const customer = new Customer("123", "John");
+	it("should throw error when name and id are empty", () => {
+		expect(() => {
+			new Customer("", "");
+		}).toThrowError("customer: Id is required, customer: Name is required");
+	});
 
-    // Act
-    customer.changeName("Jane");
+	it("should change name", () => {
+		const customer = new Customer("123", "John Doe");
 
-    // Assert
-    expect(customer.name).toBe("Jane");
-  });
+		customer.changeName("Sergio");
 
-  it("should activate customer", () => {
-    const customer = new Customer("1", "Customer 1");
-    const address = new Address("Street 1", 123, "13330-250", "São Paulo");
-    customer.Address = address;
+		expect(customer.name).toBe("Sergio");
+	});
 
-    customer.activate();
+	it("should validate when change name", () => {
+		expect(() => {
+			const customer = new Customer("123", "John Doe");
+			customer.changeName("");
+		}).toThrowError("customer: Name is required");
+	});
 
-    expect(customer.isActive()).toBe(true);
-  });
+	it("should not activate a customer without address", () => {
+		expect(() => {
+			const customer = new Customer("123", "John Doe");
+			customer.activate();
+		}).toThrowError("customer - activate: Address is mandatory to active a customer");
+	});
 
-  it("should throw error when address is undefined when you activate a customer", () => {
-    expect(() => {
-      const customer = new Customer("1", "Customer 1");
-      customer.activate();
-    }).toThrowError("Address is mandatory to activate a customer");
-  });
+	it("should set address to a customer", () => {
+		const customer = new Customer("123", "John Doe");
+		customer.setAddress(address);
 
-  it("should deactivate customer", () => {
-    const customer = new Customer("1", "Customer 1");
+		expect(customer.getAddress()).toBe(address);
+	});
 
-    customer.deactivate();
+	it("should activate and deactivate a customer", () => {
+		const customer = new Customer("123", "John Doe");
+		customer.setAddress(address);
 
-    expect(customer.isActive()).toBe(false);
-  });
+		customer.activate();
+		expect(customer.active).toBe(true);
 
-  it("should add reward points", () => {
-    const customer = new Customer("1", "Customer 1");
-    expect(customer.rewardPoints).toBe(0);
+		customer.deactivate();
+		expect(customer.active).toBe(false);
+	});
 
-    customer.addRewardPoints(10);
-    expect(customer.rewardPoints).toBe(10);
+	it("should add reward points", () => {
+		const customer = new Customer("123", "John Doe");
+		expect(customer.rewardPoints).toBe(0);
 
-    customer.addRewardPoints(10);
-    expect(customer.rewardPoints).toBe(20);
-  });
+		customer.addRewardPoints(100);
+
+		expect(customer.rewardPoints).toBe(100);
+
+		customer.addRewardPoints(100);
+
+		expect(customer.rewardPoints).toBe(200);
+	});
+
+	it("should not add negative reward points", () => {
+		expect(() => {
+			const customer = new Customer("123", "John Doe");
+			customer.addRewardPoints(100);
+
+			customer.addRewardPoints(-50);
+		}).toThrowError("customer - addRewardPoints: Points must be positive");
+	});
 });

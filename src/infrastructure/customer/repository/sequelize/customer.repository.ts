@@ -1,4 +1,4 @@
-import Customer from "../../../../domain/customer/entity/customer";
+import { Customer } from "../../../../domain/customer/entity/customer";
 import Address from "../../../../domain/customer/value-object/address";
 import CustomerRepositoryInterface from "../../../../domain/customer/repository/customer-repository.interface";
 import CustomerModel from "./customer.model";
@@ -8,11 +8,11 @@ export default class CustomerRepository implements CustomerRepositoryInterface {
     await CustomerModel.create({
       id: entity.id,
       name: entity.name,
-      street: entity.Address.street,
-      number: entity.Address.number,
-      zipcode: entity.Address.zip,
-      city: entity.Address.city,
-      active: entity.isActive(),
+      street: entity.getAddress().street,
+      number: entity.getAddress().number,
+      zipcode: entity.getAddress().zip,
+      city: entity.getAddress().city,
+      active: entity.active,
       rewardPoints: entity.rewardPoints,
     });
   }
@@ -21,11 +21,11 @@ export default class CustomerRepository implements CustomerRepositoryInterface {
     await CustomerModel.update(
       {
         name: entity.name,
-        street: entity.Address.street,
-        number: entity.Address.number,
-        zipcode: entity.Address.zip,
-        city: entity.Address.city,
-        active: entity.isActive(),
+        street: entity.getAddress().street,
+        number: entity.getAddress().number,
+        zipcode: entity.getAddress().zip,
+        city: entity.getAddress().city,
+        active: entity.active,
         rewardPoints: entity.rewardPoints,
       },
       {
@@ -56,7 +56,7 @@ export default class CustomerRepository implements CustomerRepositoryInterface {
       customerModel.zipcode,
       customerModel.city
     );
-    customer.changeAddress(address);
+    customer.setAddress(address);
     return customer;
   }
 
@@ -72,7 +72,7 @@ export default class CustomerRepository implements CustomerRepositoryInterface {
         customerModels.zipcode,
         customerModels.city
       );
-      customer.changeAddress(address);
+      customer.setAddress(address);
       if (customerModels.active) {
         customer.activate();
       }

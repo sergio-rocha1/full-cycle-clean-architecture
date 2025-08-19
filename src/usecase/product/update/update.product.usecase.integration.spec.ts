@@ -5,7 +5,7 @@ import { UpdateProductUseCase } from "./update.product.usecase";
 import ProductFactory from "../../../domain/product/factory/product.factory";
 import ProductModel from "../../../infrastructure/product/repository/sequelize/product.model";
 import ProductRepository from "../../../infrastructure/product/repository/sequelize/product.repository";
-import Product from "../../../domain/product/entity/product";
+import { Product } from "../../../domain/product/entity/product";
 
 
 describe("Integration Test update product use case", () => {

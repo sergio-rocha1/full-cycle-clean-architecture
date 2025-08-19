@@ -1,60 +1,78 @@
-import Notification from "./notification";
+import { Notification } from "./notification";
 
-describe("Unit testss for notifications", () => {
-  it("should create errors", () => {
-    const notification = new Notification();
-    const error = {
-      message: "error message",
-      context: "customer",
-    };
+describe("Unit tests for notifications", () => {
+	it("should create errors", () => {
+		const notification = new Notification();
+		const error = {
+			message: "error message",
+			context: "customer",
+		};
 
-    notification.addError(error);
+		notification.addError(error);
 
-    expect(notification.messages("customer")).toBe("customer: error message,");
+		expect(notification.messages("customer")).toBe("customer: error message");
 
-    const error2 = {
-      message: "error message2",
-      context: "customer",
-    };
-    notification.addError(error2);
+		const error2 = {
+			message: "error message2",
+			context: "customer",
+		};
 
-    expect(notification.messages("customer")).toBe(
-      "customer: error message,customer: error message2,"
-    );
+		notification.addError(error2);
 
-    const error3 = {
-      message: "error message3",
-      context: "order",
-    };
-    notification.addError(error3);
+		expect(notification.messages("customer")).toBe("customer: error message, customer: error message2");
 
-    expect(notification.messages("customer")).toBe(
-      "customer: error message,customer: error message2,"
-    );
-    expect(notification.messages()).toBe(
-      "customer: error message,customer: error message2,order: error message3,"
-    );
-  });
+		const error3 = {
+			message: "error message3",
+			context: "order",
+		};
 
-  it("should check if notification has at least one error", () => {
-    const notification = new Notification();
-    const error = {
-      message: "error message",
-      context: "customer",
-    };
-    notification.addError(error);
+		notification.addError(error3);
 
-    expect(notification.hasErrors()).toBe(true);
-  });
+		expect(notification.messages("customer")).toBe("customer: error message, customer: error message2");
+		expect(notification.messages("order")).toBe("order: error message3");
 
-  it("should get all errors props", () => {
-    const notification = new Notification();
-    const error = {
-      message: "error message",
-      context: "customer",
-    };
-    notification.addError(error);
+		expect(notification.messages()).toBe("customer: error message, customer: error message2, order: error message3");
+	});
 
-    expect(notification.getErrors()).toEqual([error]);
-  });
+	it("should check if notification has at least one error", () => {
+		const notification = new Notification();
+		const error = {
+			message: "error message",
+			context: "customer",
+		};
+
+		notification.addError(error);
+
+		expect(notification.hasErrors()).toBe(true);
+	});
+
+	it("should get all errors props", () => {
+		const notification = new Notification();
+		const error = {
+			message: "error message",
+			context: "customer",
+		};
+
+		notification.addError(error);
+
+		expect(notification.errors).toEqual([error]);
+	});
+
+	it("should throw error if has errors", () => {
+		const notification = new Notification();
+		const error = {
+			message: "error message",
+			context: "customer",
+		};
+
+		notification.addError(error);
+
+		expect(() => notification.throwErrorIfHasErrors()).toThrowError("customer: error message");
+	});
+
+	it("should not throw error if has no errors", () => {
+		const notification = new Notification();
+
+		expect(() => notification.throwErrorIfHasErrors()).not.toThrowError();
+	});
 });

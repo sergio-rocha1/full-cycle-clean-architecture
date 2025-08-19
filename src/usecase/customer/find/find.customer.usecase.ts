@@ -18,10 +18,10 @@ export default class FindCustomerUseCase {
       id: customer.id,
       name: customer.name,
       address: {
-        street: customer.Address.street,
-        city: customer.Address.city,
-        number: customer.Address.number,
-        zip: customer.Address.zip,
+        street: customer.getAddress().street,
+        city: customer.getAddress().city,
+        number: customer.getAddress().number,
+        zip: customer.getAddress().zip,
       },
     };
   }

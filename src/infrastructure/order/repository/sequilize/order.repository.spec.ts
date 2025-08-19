@@ -1,9 +1,9 @@
 import { Sequelize } from "sequelize-typescript";
 import Order from "../../../../domain/checkout/entity/order";
 import OrderItem from "../../../../domain/checkout/entity/order_item";
-import Customer from "../../../../domain/customer/entity/customer";
+import { Customer } from "../../../../domain/customer/entity/customer";
 import Address from "../../../../domain/customer/value-object/address";
-import Product from "../../../../domain/product/entity/product";
+import { Product } from "../../../../domain/product/entity/product";
 import CustomerModel from "../../../customer/repository/sequelize/customer.model";
 import CustomerRepository from "../../../customer/repository/sequelize/customer.repository";
 import ProductModel from "../../../product/repository/sequelize/product.model";
@@ -40,7 +40,7 @@ describe("Order repository test", () => {
     const customerRepository = new CustomerRepository();
     const customer = new Customer("123", "Customer 1");
     const address = new Address("Street 1", 1, "Zipcode 1", "City 1");
-    customer.changeAddress(address);
+    customer.setAddress(address);
     await customerRepository.create(customer);
 
     const productRepository = new ProductRepository();
